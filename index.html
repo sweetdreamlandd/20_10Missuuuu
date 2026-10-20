@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Món Quà Nhỏ Nhân Ngày 20-10 </title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;600;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #fce7f3 0%, #ffd1dc 40%, #e0f2fe 100%);
+            touch-action: manipulation;
+        }
+        
+        .font-handwriting {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        .font-title {
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        /* Glassmorphism panel */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 2px solid rgba(255, 255, 255, 0.75);
+            box-shadow: 0 20px 40px -15px rgba(244, 114, 182, 0.3);
+        }
+
+        /* Floating background elements */
+        .floating-bg {
+            animation: floating 6s ease-in-out infinite alternate;
+        }
+        @keyframes floating {
+            0% { transform: translateY(0px) rotate(0deg); }
+            100% { transform: translateY(-15px) rotate(5deg); }
+        }
+
+        /* Pulse hint animation */
+        .pulse-click {
+            animation: pulseGlow 2s infinite;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+
+        /* Watering Can Animation */
+        .watering-can-tilt {
+            animation: tiltWaterCan 1.2s ease-in-out infinite alternate;
+        }
+        @keyframes tiltWaterCan {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(-35deg); }
+        }
+
+        /* Flower Flying Animation to Pot Arrangement */
+        @keyframes flyToPot {
+            0% { transform: scale(0.2) translate(0, 80px) rotate(-15deg); opacity: 0; }
+            60% { transform: scale(1.15) translate(0, -20px) rotate(5deg); opacity: 0.9; }
+            100% { transform: scale(1) translate(0, 0) rotate(0deg); opacity: 1; }
+        }
+
+        .animate-fly-to-pot {
+            animation: flyToPot 0.85s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        /* Ribbon entrance */
+        @keyframes popRibbon {
+            0% { transform: scale(0) rotate(-10deg); opacity: 0; }
+            80% { transform: scale(1.15) rotate(3deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        .animate-pop-ribbon {
+            animation: popRibbon 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        /* Canvas overlay */
+        #fxCanvas {
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen w-full flex flex-col justify-between items-center relative overflow-hidden select-none text-gray-800">
+    <!-- Thẻ nhạc nền -->
+<audio id="bgMusic" loop preload="auto">
+    <!-- Thay link nhạc của bạn vào src dưới đây -->
+    <source src="/20_10/music.mp3" type="audio/mpeg">
+    Trình duyệt của bạn không hỗ trợ phát âm thanh.
+</audio>
+    <!-- Interactive Background Canvas (Hearts, Sparkles, Water) -->
+    <canvas id="fxCanvas" class="absolute inset-0 z-30 w-full h-full"></canvas>
+
+    <!-- Floating Background Decor Elements -->
+    <div class="absolute top-8 left-8 z-0 floating-bg text-pink-300 opacity-60">
+        <i class="fa-solid fa-heart text-5xl sm:text-7xl"></i>
+    </div>
+    <div class="absolute top-16 right-10 z-0 floating-bg text-rose-300 opacity-60" style="animation-delay: -3s;">
+        <i class="fa-solid fa-spa text-6xl sm:text-8xl"></i>
+    </div>
+    <div class="absolute bottom-12 left-10 z-0 floating-bg text-purple-300 opacity-50" style="animation-delay: -2s;">
+        <i class="fa-solid fa-cloud text-6xl sm:text-8xl"></i>
+    </div>
+
+    <!-- Top Navigation / Controls Bar -->
+    <header class="w-full max-w-4xl p-4 sm:p-6 flex justify-between items-center z-40">
+        <div class="flex items-center gap-2 bg-white/60 px-3 py-1.5 rounded-full backdrop-blur-sm border border-white/80 shadow-sm">
+            <span class="w-3 h-3 rounded-full bg-rose-400 inline-block animate-ping"></span>
+            <span class="text-xs sm:text-sm font-bold tracking-wider text-rose-700 uppercase font-title">20 Tháng 10 💖</span>
+        </div>
+
+        <button id="soundToggleBtn" class="p-3 rounded-2xl bg-white/80 hover:bg-white text-rose-600 shadow-md transition-all flex items-center justify-center gap-2 text-sm font-bold border border-white">
+            <i id="soundIcon" class="fa-solid fa-volume-high text-lg"></i>
+            <span class="hidden sm:inline">Âm thanh</span>
+        </button>
+    </header>
+
+    <!-- MAIN INTERACTIVE SCREEN CONTAINER (Clicking inside advances story) -->
+    <main id="appContainer" class="relative z-10 w-full max-w-2xl flex-1 flex flex-col items-center justify-center p-4 cursor-pointer">
+
+        <!-- Visual Stage Area: Pot, Sprout, Blooming, Interleaved Flower Pot Arrangement -->
+        <div class="relative w-full h-[340px] sm:h-[400px] flex items-end justify-center mb-2">
+
+            <!-- Watering Can (Shown on Stage 2) -->
+            <div id="wateringCan" class="absolute top-2 right-10 sm:right-20 z-30 opacity-0 pointer-events-none transition-all duration-500">
+                <svg class="w-24 h-24 sm:w-32 sm:h-32 drop-shadow-md watering-can-tilt" viewBox="0 0 100 100" fill="none">
+                    <path d="M30 40 L65 40 L60 80 L25 80 Z" fill="#F472B6" stroke="#DB2777" stroke-width="2"/>
+                    <path d="M25 45 C10 45 10 75 25 75" fill="none" stroke="#DB2777" stroke-width="5" stroke-linecap="round"/>
+                    <path d="M62 55 L85 35" stroke="#DB2777" stroke-width="6" stroke-linecap="round"/>
+                    <path d="M82 30 L90 40 L80 45 Z" fill="#FBCFE8" stroke="#DB2777" stroke-width="2"/>
+                </svg>
+            </div>
+
+            <!-- SVG Plant & Pot Stage -->
+            <svg id="stageSvg" class="w-full h-full overflow-visible" viewBox="0 0 300 400">
+                <defs>
+                    <!-- Ceramic Pot Gradient -->
+                    <linearGradient id="ceramicPotGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#FFF5F5" />
+                        <stop offset="40%" stop-color="#FECDD3" />
+                        <stop offset="100%" stop-color="#FDA4AF" />
+                    </linearGradient>
+
+                    <!-- Pot Rim Gradient -->
+                    <linearGradient id="potRimGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#FFE4E6" />
+                        <stop offset="50%" stop-color="#FECDD3" />
+                        <stop offset="100%" stop-color="#F43F5E" />
+                    </linearGradient>
+
+                    <!-- Rich Soil Gradient -->
+                    <linearGradient id="soilGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#542605" />
+                        <stop offset="100%" stop-color="#2A1202" />
+                    </linearGradient>
+
+                    <!-- Stem Gradient -->
+                    <linearGradient id="stemGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#16A34A" />
+                        <stop offset="100%" stop-color="#4ADE80" />
+                    </linearGradient>
+
+                    <!-- Ribbon Bow Gradient -->
+                    <linearGradient id="ribbonGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#F43F5E" />
+                        <stop offset="100%" stop-color="#BE123C" />
+                    </linearGradient>
+
+                    <!-- Pot Shadow Filter -->
+                    <filter id="potShadow" x="-20%" y="-20%" width="140%" height="140%">
+                        <feDropShadow dx="0" dy="12" stdDeviation="8" flood-color="#9F1239" flood-opacity="0.25" />
+                    </filter>
+
+                    <!-- Flower Glow Filter -->
+                    <filter id="flowerGlow" x="-20%" y="-20%" width="140%" height="140%">
+                        <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#FDA4AF" flood-opacity="0.4" />
+                    </filter>
+                </defs>
+
+                <!-- LAYER 1: BACK TULIPS (Xen kẽ phía sau chậu) -->
+                <g id="layerTulipsBack" filter="url(#flowerGlow)"></g>
+
+                <!-- GROUND SHADOW UNDER POT -->
+                <ellipse cx="150" cy="360" rx="75" ry="14" fill="#9F1239" opacity="0.15" />
+
+                <!-- CERAMIC POT BASE & SOIL (Cố định ở trung tâm) -->
+                <g id="potGroup" filter="url(#potShadow)">
+                    <!-- Pot Body (Hình dáng chậu gốm bầu tròn duyên dáng) -->
+                    <path d="M 85 285 Q 75 330 102 355 Q 150 365 198 355 Q 225 330 215 285 Z" fill="url(#ceramicPotGrad)" stroke="#FB7185" stroke-width="2.5"/>
+                    
+                    <!-- Decorative Motif on Pot Body -->
+                    <path d="M 95 315 Q 150 330 205 315" fill="none" stroke="#F43F5E" stroke-width="1.5" opacity="0.4" stroke-dasharray="4 3"/>
+                    <circle cx="150" cy="318" r="4" fill="#F43F5E" opacity="0.6"/>
+                    <circle cx="130" cy="316" r="2.5" fill="#F43F5E" opacity="0.4"/>
+                    <circle cx="170" cy="316" r="2.5" fill="#F43F5E" opacity="0.4"/>
+
+                    <!-- Soil Inside Pot -->
+                    <ellipse cx="150" cy="285" rx="63" ry="14" fill="url(#soilGrad)"/>
+                </g>
+
+                <!-- LAYER 2: MIDDLE TULIPS & FIRST STAGE SPROUT (Xen kẽ tầng giữa) -->
+                <g id="seedGroup" opacity="0" transform="translate(150, 180)">
+                    <ellipse cx="0" cy="0" rx="8" ry="12" fill="#D97706" transform="rotate(15)" stroke="#78350F" stroke-width="1.5"/>
+                </g>
+
+                <!-- Single Plant Growing (Stage 1-3) -->
+                <g id="singlePlantGroup">
+                    <path id="stem" d="M 150 285 Q 150 285 150 285" fill="none" stroke="url(#stemGrad)" stroke-width="7" stroke-linecap="round"/>
+                    
+                    <g id="leafLeft" opacity="0" transform="translate(150, 240) scale(0)">
+                        <path d="M 0 0 Q -25 -20 -38 0 Q -15 20 0 0" fill="#22C55E" stroke="#15803D" stroke-width="1.5"/>
+                    </g>
+                    <g id="leafRight" opacity="0" transform="translate(150, 220) scale(0)">
+                        <path d="M 0 0 Q 25 -20 38 0 Q 15 20 0 0" fill="#22C55E" stroke="#15803D" stroke-width="1.5"/>
+                    </g>
+
+                    <g id="singleTulip" opacity="0" transform="translate(150, 140) scale(0)">
+                        <path d="M -16 10 C -25 -20 -12 -45 0 -50 C 12 -45 25 -20 16 10 Z" fill="#FB7185"/>
+                        <path d="M -20 5 C -30 -15 -18 -40 -5 -45 C -2 -20 -10 0 -20 5 Z" fill="#F43F5E"/>
+                        <path d="M 20 5 C 30 -15 18 -40 5 -45 C 2 -20 10 0 20 5 Z" fill="#E11D48"/>
+                        <path d="M -10 10 C -15 -15 0 -35 0 -35 C 0 -35 15 -15 10 10 Z" fill="#FDA4AF"/>
+                    </g>
+                </g>
+
+                <g id="layerTulipsMiddle" filter="url(#flowerGlow)"></g>
+
+                <!-- POT FRONT RIM (Tạo độ sâu cho chậu - che gốc cành phía sau) -->
+                <ellipse cx="150" cy="283" rx="66" ry="11" fill="none" stroke="url(#potRimGrad)" stroke-width="5"/>
+
+                <!-- LAYER 3: FRONT TULIPS & LEAVES (Xen kẽ tầng trước và rủ nhẹ tràn viền chậu) -->
+                <g id="layerTulipsFront" filter="url(#flowerGlow)"></g>
+
+                <!-- FINALE RIBBON DECORATION (Hiện ra khi hoàn thành bó/chậu hoa) -->
+                <g id="ribbonGroup" opacity="0" transform="translate(150, 290)">
+                    <!-- Dải lụa thắt quanh chậu -->
+                    <path d="M -60 -3 Q 0 8 60 -3 Q 58 8 0 16 Q -58 8 -60 -3 Z" fill="url(#ribbonGrad)"/>
+                    <!-- Nơ lụa quyến rũ -->
+                    <path d="M 0 6 C -28 -12 -35 22 -12 14 C 0 6 0 6 0 6 C 0 6 0 6 12 14 C 35 22 28 -12 0 6 Z" fill="url(#ribbonGrad)"/>
+                    <!-- Dải nơ rủ -->
+                    <path d="M -2 12 Q -15 35 -25 45 Q -15 42 -4 16 Z" fill="#E11D48"/>
+                    <path d="M 2 12 Q 15 35 25 45 Q 15 42 4 16 Z" fill="#BE123C"/>
+                    <circle cx="0" cy="8" r="6" fill="#9F1239" stroke="#FFF" stroke-width="1"/>
+                </g>
+            </svg>
+        </div>
+
+        <!-- Glassmorphism Card for Wishes & Interactive Messages -->
+        <div class="glass-card w-full rounded-3xl p-6 sm:p-7 text-center relative z-20 flex flex-col items-center gap-3 transition-all duration-500">
+            
+            <!-- Step Badge & Title -->
+            <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-rose-100 text-rose-700 text-xs sm:text-sm font-bold shadow-sm">
+                <span id="badgeIcon">🎁</span>
+                <span id="badgeText">Thông điệp đặc biệt</span>
+            </div>
+
+            <!-- Main Interactive Wish / Story Text -->
+            <h2 id="mainMessage" class="text-xl sm:text-2xl font-bold text-gray-800 leading-relaxed font-title min-h-[64px] flex items-center justify-center">
+                Hi. chào cậu mình có một món quà nhỏ nhân ngày 20-10...
+            </h2>
+
+            <!-- Secondary Subtext / Sub-wish -->
+            <p id="subMessage" class="text-xs sm:text-sm text-gray-600 font-semibold min-h-[22px]">
+                Chạm vào màn hình để bắt đầu hành trình nhé!
+            </p>
+
+            <!-- Touch / Click Hint Banner -->
+            <div class="mt-1 flex items-center justify-center gap-2 text-rose-500 font-bold text-xs sm:text-sm pulse-click">
+                <i class="fa-solid fa-hand-pointer"></i>
+                <span id="clickHintText">Chạm vào màn hình để tiếp tục</span>
+                <i class="fa-solid fa-chevron-right"></i>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 p-3 text-center text-xs font-bold text-rose-900/60">
+        Chúc cậu luôn xinh đẹp, rạng rỡ và hạnh phúc! ❤️
+    </footer>
+
+    <!-- JS Logic & Web Audio Synthesizer & Story Management -->
+    <script>
+        /* ==========================================================================
+           1. CẤU HÌNH LỜI CHÚC & VỊ TRÍ CẮM HOA TULIP XEN KẼ TRONG CHẬU
+           ========================================================================== */
+        
+        // Danh sách lời chúc đồng bộ với việc cắm từng bông hoa tulip
+        const WISHES = [
+            {
+                title: "Gieo mầm yêu thương 🌸",
+                desc: "Gửi tặng bạn bông hoa tulip hồng pastel dịu dàng đầu tiên.",
+                color: "#FB7185"
+            },
+            {
+                title: "Chúc bạn luôn tươi trẻ & rạng rỡ ✨",
+                desc: "Mong nụ cười rạng ngời trên môi nha.",
+                color: "#F43F5E"
+            },
+            {
+                title: "Chúc bạn luôn được yêu thương nè 💕",
+                desc: "Cảm ơn bạn đã xuất hiện và làm thế giới này thêm dịu dàng.",
+                color: "#A855F7"
+            },
+            {
+                title: "Chúc bạn luôn tự tin & tỏa sáng 🌟",
+                desc: "Hành trong phía trước rực rõ nhe",
+                color: "#EAB308"
+            },
+            {
+                title: "Chúc bạn gặp nhiều may mắn & bình yên 🍃",
+                desc: "Hi vọng là sớm được gặp lại bạn nè.",
+                color: "#F97316"
+            },
+            {
+                title: "Chúc bạn tràn ngập niềm vui và những điều ngọt ngào 🌷",
+                desc: "Đến đây tớ cũng ko biết phải mô tả như nào kk.",
+                color: "#EC4899"
+            },
+            {
+                title: "Chúc bạn trọn vẹn hạnh phúc ❤️",
+                desc: "Gửi bạn bó hoa này trước nheee",
+                color: "#E11D48"
+            }
+        ];
+
+        /* 
+           Cấu hình vị trí cắm hoa tulip XEN KẼ NẰM TRONG CHẬU:
+           Phân bố theo 3 tầng (layer): 'back' (sau chậu), 'middle' (trung tâm chậu), 'front' (trước và tràn nhẹ viền chậu)
+           Tọa độ (x, y) tính theo gốc miệng chậu (150, 280)
+        */
+        const TULIP_ARRANGEMENT = [
+            // Bông 1: Trung tâm cao nhỉnh lên (Màu Hồng Pastel)
+            { layer: 'middle', x: 150, y: 150, stemControl: { cx: 148, cy: 220 }, scale: 1.05, rot: -2, mainColor: '#FB7185', subColor: '#FDA4AF' },
+            
+            // Bông 2: Lệch trái vừa, tầng trung (Màu Đỏ Hồng)
+            { layer: 'middle', x: 110, y: 175, stemControl: { cx: 125, cy: 230 }, scale: 0.95, rot: -16, mainColor: '#F43F5E', subColor: '#FB7185' },
+            
+            // Bông 3: Lệch phải vừa, tầng sau cao (Màu Tím Mộng Mơ)
+            { layer: 'back', x: 190, y: 160, stemControl: { cx: 170, cy: 220 }, scale: 0.98, rot: 18, mainColor: '#C084FC', subColor: '#E9D5FF' },
+            
+            // Bông 4: Lệch trái cao rủ nhẹ (Màu Vàng Ấm)
+            { layer: 'back', x: 75, y: 185, stemControl: { cx: 105, cy: 235 }, scale: 0.9, rot: -28, mainColor: '#FBBF24', subColor: '#FEF08A' },
+            
+            // Bông 5: Lệch phải trước, tầng thấp tràn viền (Màu Cam San Hô)
+            { layer: 'front', x: 220, y: 200, stemControl: { cx: 185, cy: 245 }, scale: 0.92, rot: 25, mainColor: '#FB923C', subColor: '#FFEDD5' },
+            
+            // Bông 6: Tầng trước chính giữa thấp điểm xuyết (Màu Trắng Hồng Tinh Khôi)
+            { layer: 'front', x: 135, y: 215, stemControl: { cx: 142, cy: 250 }, scale: 0.88, rot: -8, mainColor: '#F472B6', subColor: '#FFF1F2' },
+            
+            // Bông 7: Tầng trước lệch phải trung tâm vươn cao đẹp mắt (Màu Đỏ Thắm)
+            { layer: 'front', x: 170, y: 190, stemControl: { cx: 160, cy: 240 }, scale: 0.92, rot: 10, mainColor: '#E11D48', subColor: '#FDA4AF' }
+        ];
+
+        /* ==========================================================================
+           2. ÂM THANH SỐNG ĐỘNG BẰNG WEB AUDIO API
+           ========================================================================== */
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+        let soundEnabled = true;
+
+        // Hàm phát nhạc nền
+function playBackgroundMusic() {
+    const bgMusic = document.getElementById('bgMusic');
+    if (bgMusic && bgMusic.paused) {
+        bgMusic.volume = 0.5; // Đặt âm lượng (từ 0.0 đến 1.0, ở đây là 50%)
+        bgMusic.play().then(() => {
+            console.log("Nhạc nền đang phát");
+        }).catch(error => {
+            console.log("Chưa thể phát nhạc tự động:", error);
+        });
+    }
+}
+function toggleBackgroundMusic() {
+    const bgMusic = document.getElementById('bgMusic');
+    if (!bgMusic) return;
+
+    if (bgMusic.paused) {
+        // Nếu đang dừng -> Phát nhạc
+        bgMusic.volume = 0.5;
+        bgMusic.play().then(() => {
+            console.log("Nhạc nền đang phát");
+        }).catch(error => {
+            console.log("Không thể phát nhạc:", error);
+        });
+    } else {
+        // Nếu đang phát -> Dừng nhạc
+        bgMusic.pause();
+        console.log("Nhạc nền đã dừng");
+    }
+}
+        function initAudio() {
+            if (!audioCtx) audioCtx = new AudioContext();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+        }
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            initAudio();
+            
+            if (!audioCtx) return;
+            
+            const now = audioCtx.currentTime;
+
+            if (type === 'click') {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                const musicBtn = document.getElementById('soundToggleBtn');
+if (musicBtn) {
+    musicBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); // Tránh bị lan sự kiện click sang màn hình
+        toggleBackgroundMusic();
+    });
+}
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(380, now);
+                osc.frequency.exponentialRampToValueAtTime(760, now + 0.08);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.08);
+
+            } else if (type === 'water') {
+                const bufferSize = audioCtx.sampleRate * 0.6;
+                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const output = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) output[i] = Math.random() * 2 - 1;
+                const whiteNoise = audioCtx.createBufferSource();
+                whiteNoise.buffer = buffer;
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'bandpass';
+                filter.frequency.setValueAtTime(1100, now);
+                const gain = audioCtx.createGain();
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+                whiteNoise.connect(filter);
+                filter.connect(audioCtx.destination);
+                whiteNoise.start(now);
+                whiteNoise.stop(now + 0.6);
+
+            } else if (type === 'bloom') {
+                const notes = [523.25, 659.25, 783.99, 1046.50]; // C E G C
+                notes.forEach((freq, idx) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.07);
+                    gain.gain.setValueAtTime(0.18, now + idx * 0.07);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.07 + 0.45);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now + idx * 0.07);
+                    osc.stop(now + idx * 0.07 + 0.45);
+                });
+            } else if (type === 'fanfare') {
+                const chord = [523.25, 659.25, 783.99, 1046.50, 1318.51]; // C E G C E
+                chord.forEach((freq) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now);
+                    gain.gain.setValueAtTime(0.22, now);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.4);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 1.4);
+                });
+            }
+        }
+
+        /* ==========================================================================
+           3. HỆ THỐNG HẠT PARTICLE VÀ PHÁO HOA TRÁI TIM (CANVAS)
+           ========================================================================== */
+        const canvas = document.getElementById('fxCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor(x, y, kind) {
+                this.x = x;
+                this.y = y;
+                this.kind = kind; // 'heart', 'water', 'sparkle'
+                this.life = 1;
+
+                if (kind === 'heart') {
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = Math.random() * 5 + 2;
+                    this.vx = Math.cos(angle) * speed;
+                    this.vy = Math.sin(angle) * speed - 2;
+                    this.size = Math.random() * 12 + 8;
+                    this.color = `hsl(${Math.random() * 40 + 330}, 100%, 65%)`;
+                    this.decay = Math.random() * 0.015 + 0.01;
+                } else if (kind === 'water') {
+                    this.vx = (Math.random() - 0.5) * 2;
+                    this.vy = Math.random() * 4 + 3;
+                    this.size = Math.random() * 3 + 2;
+                    this.color = '#60A5FA';
+                    this.decay = 0.03;
+                } else {
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = Math.random() * 4 + 1;
+                    this.vx = Math.cos(angle) * speed;
+                    this.vy = Math.sin(angle) * speed;
+                    this.size = Math.random() * 4 + 2;
+                    this.color = '#FBBF24';
+                    this.decay = 0.02;
+                }
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.life -= this.decay;
+                if (this.kind === 'water') this.vy += 0.15;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, this.life);
+                if (this.kind === 'heart') {
+                    ctx.font = `${this.size}px serif`;
+                    ctx.fillText('❤️', this.x, this.y);
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
+        }
+
+        function spawnWater(x, y) {
+            for (let i = 0; i < 4; i++) particles.push(new Particle(x, y, 'water'));
+        }
+
+        function spawnHeartBurst(x, y, count = 30) {
+            for (let i = 0; i < count; i++) particles.push(new Particle(x, y, 'heart'));
+        }
+
+        function renderParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = particles.length - 1; i >= 0; i--) {
+                particles[i].update();
+                particles[i].draw();
+                if (particles[i].life <= 0) particles.splice(i, 1);
+            }
+            requestAnimationFrame(renderParticles);
+        }
+        renderParticles();
+
+        /* ==========================================================================
+           4. ĐIỀU KHIỂN LUỒNG CÂU CHUYỆN & CẮM HOA VÀO CHẬU (STORY FLOW)
+           ========================================================================== */
+        
+        const SCREEN_START = 0;
+        const SCREEN_SOW = 1;
+        const SCREEN_WATER = 2;
+        const SCREEN_BLOOM_FIRST = 3;
+        const SCREEN_WISHES_START = 4;
+
+        let currentScreen = SCREEN_START;
+        let wishIndex = 0;
+        let isAnimating = false;
+
+        // Elements
+        const seedGroup = document.getElementById('seedGroup');
+        const stem = document.getElementById('stem');
+        const leafLeft = document.getElementById('leafLeft');
+        const leafRight = document.getElementById('leafRight');
+        const singleTulip = document.getElementById('singleTulip');
+        const singlePlantGroup = document.getElementById('singlePlantGroup');
+        const wateringCan = document.getElementById('wateringCan');
+        const ribbonGroup = document.getElementById('ribbonGroup');
+
+        // Layers for Interleaved Tulips
+        const layerTulipsBack = document.getElementById('layerTulipsBack');
+        const layerTulipsMiddle = document.getElementById('layerTulipsMiddle');
+        const layerTulipsFront = document.getElementById('layerTulipsFront');
+
+        // UI Text
+        const mainMessage = document.getElementById('mainMessage');
+        const subMessage = document.getElementById('subMessage');
+        const badgeText = document.getElementById('badgeText');
+        const badgeIcon = document.getElementById('badgeIcon');
+        const clickHintText = document.getElementById('clickHintText');
+        const soundToggleBtn = document.getElementById('soundToggleBtn');
+        const soundIcon = document.getElementById('soundIcon');
+        const appContainer = document.getElementById('appContainer');
+
+        // Hàm tạo phần tử Bông hoa Tulip cắm trong chậu theo SVG
+        function createTulipSVGElement(config) {
+            const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            g.classList.add('animate-fly-to-pot');
+
+            // Gốc cắm xuất phát từ lòng đất trong chậu (150, 280)
+            const potBaseX = 150 + (config.x - 150) * 0.3;
+            const potBaseY = 282;
+
+            g.innerHTML = `
+                <!-- Stem curved naturally into pot -->
+                <path d="M ${potBaseX} ${potBaseY} Q ${config.stemControl.cx} ${config.stemControl.cy} ${config.x} ${config.y + 25}" 
+                      fill="none" stroke="url(#stemGrad)" stroke-width="4.5" stroke-linecap="round"/>
+                
+                <!-- Leaves on stem -->
+                <path d="M ${config.stemControl.cx} ${config.stemControl.cy} Q ${config.stemControl.cx - 15} ${config.stemControl.cy - 10} ${config.stemControl.cx - 22} ${config.stemControl.cy + 5} Q ${config.stemControl.cx - 8} ${config.stemControl.cy + 15} ${config.stemControl.cx} ${config.stemControl.cy}" 
+                      fill="#22C55E" opacity="0.9"/>
+
+                <!-- Tulip Flower Head -->
+                <g transform="translate(${config.x}, ${config.y}) scale(${config.scale}) rotate(${config.rot})">
+                    <!-- Outer Petals -->
+                    <path d="M -16 10 C -25 -20 -12 -45 0 -50 C 12 -45 25 -20 16 10 Z" fill="${config.mainColor}"/>
+                    <path d="M -20 5 C -30 -15 -18 -40 -5 -45 C -2 -20 -10 0 -20 5 Z" fill="${config.mainColor}" opacity="0.9"/>
+                    <path d="M 20 5 C 30 -15 18 -40 5 -45 C 2 -20 10 0 20 5 Z" fill="${config.mainColor}" opacity="0.95"/>
+                    <!-- Inner Petal highlight -->
+                    <path d="M -10 10 C -15 -15 0 -35 0 -35 C 0 -35 15 -15 10 10 Z" fill="${config.subColor}"/>
+                    <path d="M -4 -20 C -8 -35 0 -42 0 -42 C 0 -42 8 -35 4 -20 Z" fill="#FFF" opacity="0.4"/>
+                </g>
+            `;
+            return g;
+        }
+
+        // Thêm Tulip vào layer tương ứng (xen kẽ trước/sau/giữa)
+        function addTulipToPotArrangement(index) {
+            const config = TULIP_ARRANGEMENT[index % TULIP_ARRANGEMENT.length];
+            const tulipElem = createTulipSVGElement(config);
+
+            if (config.layer === 'back') {
+                layerTulipsBack.appendChild(tulipElem);
+            } else if (config.layer === 'front') {
+                layerTulipsFront.appendChild(tulipElem);
+            } else {
+                layerTulipsMiddle.appendChild(tulipElem);
+            }
+        }
+
+        // Xử lý sự kiện click chuyển screen
+        function handleScreenAdvance() {
+            if (isAnimating) return;
+
+            initAudio();
+            playBackgroundMusic();
+            if (currentScreen === SCREEN_START) {
+                // Chuyển sang màn gieo hạt vào chậu
+                currentScreen = SCREEN_SOW;
+                playSound('click');
+                
+                badgeIcon.textContent = '🌱';
+                badgeText.textContent = 'Bước 1: Gieo Hạt Vao Chậu';
+                mainMessage.textContent = 'Gieo hạt mầm yêu thương vào chậu đất ấm';
+                subMessage.textContent = 'Hạt mầm nhỏ bé ấp ủ những tình cảm chân thành...';
+
+                isAnimating = true;
+                seedGroup.setAttribute('opacity', '1');
+                seedGroup.setAttribute('transform', 'translate(150, 120)');
+
+                setTimeout(() => {
+                    seedGroup.style.transition = 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                    seedGroup.setAttribute('transform', 'translate(150, 280) scale(0.6)');
+                    setTimeout(() => {
+                        seedGroup.setAttribute('opacity', '0');
+                        isAnimating = false;
+                    }, 800);
+                }, 100);
+
+            } else if (currentScreen === SCREEN_SOW) {
+                // Chuyển sang tưới nước
+                currentScreen = SCREEN_WATER;
+                playSound('water');
+
+                badgeIcon.textContent = '💧';
+                badgeText.textContent = 'Bước 2: Tưới Nước Mát Lành';
+                mainMessage.textContent = 'Tưới những giọt nước đong đầy vắt trong';
+                subMessage.textContent = 'Để hạt mầm từ từ thức giấc dưới vạt nắng xuân...';
+
+                wateringCan.classList.remove('opacity-0', 'pointer-events-none');
+                wateringCan.classList.add('opacity-100');
+
+                const svgRect = document.getElementById('stageSvg').getBoundingClientRect();
+                const rx = svgRect.left + svgRect.width * 0.72;
+                const ry = svgRect.top + svgRect.height * 0.22;
+
+                let c = 0;
+                const interval = setInterval(() => {
+                    spawnWater(rx, ry);
+                    c++;
+                    if (c > 20) clearInterval(interval);
+                }, 50);
+
+                setTimeout(() => {
+                    wateringCan.classList.remove('opacity-100');
+                    wateringCan.classList.add('opacity-0', 'pointer-events-none');
+                }, 1500);
+
+            } else if (currentScreen === SCREEN_WATER) {
+                // Chuyển sang hoa nở mầm đầu tiên
+                currentScreen = SCREEN_BLOOM_FIRST;
+                playSound('bloom');
+
+                badgeIcon.textContent = '🌷';
+                badgeText.textContent = 'Bước 3: Mầm Hoa Hé Nở';
+                mainMessage.textContent = 'Bông Tulip rực rỡ đầu tiên đã vươn lên!';
+                subMessage.textContent = 'Sẵn sàng đón nhận vườn hoa ngát hương...';
+
+                isAnimating = true;
+                
+                stem.setAttribute('d', 'M 150 282 Q 148 220 150 150');
+                leafLeft.setAttribute('opacity', '1');
+                leafLeft.setAttribute('transform', 'translate(150, 230) scale(1)');
+                leafRight.setAttribute('opacity', '1');
+                leafRight.setAttribute('transform', 'translate(150, 200) scale(1)');
+
+                setTimeout(() => {
+                    singleTulip.setAttribute('opacity', '1');
+                    singleTulip.setAttribute('transform', 'translate(150, 150) scale(1)');
+                    spawnHeartBurst(window.innerWidth / 2, window.innerHeight * 0.4, 20);
+                    isAnimating = false;
+                }, 600);
+
+            } else if (currentScreen === SCREEN_BLOOM_FIRST || currentScreen === SCREEN_WISHES_START) {
+                // MÀN ĐỌC LỜI CHÚC & CẮM HOA XEN KẼ VÀO CHẬU
+                currentScreen = SCREEN_WISHES_START;
+
+                if (wishIndex < WISHES.length) {
+                    const wish = WISHES[wishIndex];
+                    playSound('bloom');
+
+                    // Ẩn mầm đơn ban đầu để chuyển sang chậu hoa cắm đan xen nhiều lớp
+                    if (wishIndex === 0) {
+                        singlePlantGroup.style.transition = 'opacity 0.4s';
+                        singlePlantGroup.style.opacity = '0';
+                    }
+
+                    // Cắm thêm 1 bông tulip mới vào chậu theo tầng xen kẽ
+                    addTulipToPotArrangement(wishIndex);
+
+                    // Hiệu ứng pháo tim
+                    const svgRect = document.getElementById('stageSvg').getBoundingClientRect();
+                    spawnHeartBurst(svgRect.left + svgRect.width * 0.5, svgRect.top + svgRect.height * 0.4, 15);
+
+                    // Cập nhật giao diện lời chúc
+                    badgeIcon.textContent = '💌';
+                    badgeText.textContent = `Lời chúc ${wishIndex + 1}/${WISHES.length}`;
+                    mainMessage.textContent = wish.title;
+                    mainMessage.style.color = wish.color;
+                    subMessage.textContent = wish.desc;
+
+                    wishIndex++;
+
+                } else {
+                    // MÀN HOÀN THÀNH: CHẬU HOA XEN KẼ RỰC RỠ & NƠ LỤA TRANG TRÍ
+                    playSound('fanfare');
+
+                    // Hiện nơ lụa thắt chậu hoa
+                    ribbonGroup.setAttribute('opacity', '1');
+                    ribbonGroup.classList.add('animate-pop-ribbon');
+
+                    badgeIcon.textContent = '👑';
+                    badgeText.textContent = '20/10 Trọn Vẹn Yêu Thương';
+                    mainMessage.textContent = 'Chậu Hoa Tulip Hoàn Hảo Dành Tặng Bạn! 🎉';
+                    mainMessage.style.color = '#E11D48';
+                    subMessage.textContent = 'Chúc bạn một ngày 20-10 ngập tràn niềm vui, luôn tự tin, tỏa sáng và ngát hương như chậu hoa tulip rực rỡ này!';
+
+                    clickHintText.textContent = 'Chạm để ngắm lại chậu hoa tuyệt đẹp';
+
+                    // Bắn pháo hoa trái tim chúc mừng
+                    for (let i = 0; i < 6; i++) {
+                        setTimeout(() => {
+                            spawnHeartBurst(
+                                Math.random() * window.innerWidth * 0.8 + window.innerWidth * 0.1,
+                                Math.random() * window.innerHeight * 0.5 + window.innerHeight * 0.1,
+                                32
+                            );
+                        }, i * 280);
+                    }
+
+                    // Reset về vòng lặp lời chúc nếu click tiếp
+                    wishIndex = 0;
+                }
+            }
+        }
+
+        // Sự kiện click/tap toàn bộ app
+        appContainer.addEventListener('click', handleScreenAdvance);
+
+        // Sound Toggle
+        soundToggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            soundEnabled = !soundEnabled;
+            if (soundEnabled) {
+                soundIcon.className = 'fa-solid fa-volume-high text-lg';
+                initAudio();
+                playSound('click');
+            } else {
+                soundIcon.className = 'fa-solid fa-volume-xmark text-lg text-gray-400';
+            }
+        });
+    </script>
+</body>
+</html>
